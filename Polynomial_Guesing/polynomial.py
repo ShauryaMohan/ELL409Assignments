@@ -41,7 +41,8 @@ TYPE = args.loss_function if(args.loss_function) else 5
 file_to_read = open(INPUT_FILE,'r')
 t = 0
 for line in file_to_read:
-    t = t + 1
+    if (len(line.split())):
+        t = t + 1
 
 DATASET_SIZE = t - 1
 TRAINING_SET_SIZE = 20
