@@ -9,8 +9,8 @@ parser = argparse.ArgumentParser(description='Guess the polynomial from the data
 
 
 parser.add_argument('-lf','--loss_function', type=int, metavar='',help="Enter the loss function for gradient 1: Mean Square, 2: Mean Absolute, 3: Mean Root, 4: Cross Entropy, 5: Log-Cosh")
-parser.add_argument('-rp','--reg_para', type=float, metavar='',help="Enter the regularization parameter. 0 for none")
 parser.add_argument('-df','--data_file', metavar='',help="Enter the address of the data file to be used", required=True)
+parser.add_argument('-pl','--plot',help="If you want to plot the polynomial against points", action="store_true")
 args = parser.parse_args()
 
 # Constants
@@ -27,7 +27,7 @@ INITIALIZATION_VALUE = [0,0]
 LN_2 = 0.693
 INPUT_FILE = "Data\\" + args.data_file
 OUTPUT_FILE = "Output.txt"
-PLOT = False # Do you wanna plot the resultant polynomial with data points
+PLOT = args.plot # Do you wanna plot the resultant polynomial with data points
 CREATE_FILE = True # Create a file containg data using the polynomial.
 
 # Parameters 
@@ -35,7 +35,7 @@ ITERATIONS = 50000
 DEGREE_LIMIT = 11
 REGULARISATION = True
 SHUFFLE = True
-REGULARISATION_PARAMETER = args.reg_para if(args.reg_para) else 0
+REGULARISATION_PARAMETER = 0
 TYPE = args.loss_function if(args.loss_function) else 5
 
 file_to_read = open(INPUT_FILE,'r')
@@ -45,7 +45,7 @@ for line in file_to_read:
         t = t + 1
 
 DATASET_SIZE = t - 1
-TRAINING_SET_SIZE = 20
+TRAINING_SET_SIZE = 9*(DATASET_SIZE//10)
 TESTING_SET_SIZE = DATASET_SIZE - TRAINING_SET_SIZE
 
 def regularize_gradient(gradient, W, regularisation_parameter):
@@ -274,10 +274,11 @@ def PolyCoefficients(x, coeffs):
 # Function to plot graph with scatter plot and predicted polynomial
 def plot_result(coefficients, x, y):
     plt.scatter(x,y)
-    x1 = numpy.linspace(-5,5,100)
+    starting_point = int(min(x)) -1
+    ending_point = int(max(x)) + 1
+    x1 = numpy.linspace(starting_point,ending_point,100)
     plt.plot(x1,PolyCoefficients(x1,coefficients))
-    # plt.show()
-    plt.savefig("CrossPlot.png")
+    plt.show()
     plt.close()
 
 # Creates an output file and prints test error and training error along with iterations and degree
